@@ -1,28 +1,39 @@
+import { ADD_LOCAL, TOGGLE_INFO_WINDOW, SET_ACTIVE_LOCAL_MARKER } from "../Actions";
+import uniqid from 'uniqid';
+
 const initialState = {
-    'api_key': 'AIzaSyDJp-FXdbYoWpw1a4Ta4J0f0oLusfMPV9w',
-    center: {
+    api_key: 'AIzaSyBaUKcLhuTzmpsXtt9qtBPACPFiYauS0M4',
+    activeLocalMarker: null,
+    initialPosition: {
         lat: -3.7340904,
         lng: -38.5023363,
     },
-    marks: [],
+    locals: [],
+    showInfoWindow: false,
     zoom: 14,
 };
 
 const MappingReducer = (state = initialState, action) => {
     switch(action.type) {
-        case 'MARK_MAP': {
-            let marks = state.marks;
-            marks.push({lat: action.lat, lng: action.lng});
+        case ADD_LOCAL: {
+            let locals = state.locals;
+            locals.push({id: uniqid(), position: {lat: action.lat, lng: action.lng}});
+
             return {
                 ...state,
-                marks
+                locals
             }
         }
-        case 'SET_POS': {
+        case TOGGLE_INFO_WINDOW: {
             return {
                 ...state,
-                lat: action.lat,
-                lng: action.lng
+                showInfoWindow: action.show,
+            }
+        }
+        case SET_ACTIVE_LOCAL_MARKER: {
+            return {
+                ...state,
+                activeLocalMarker: action.marker,
             }
         }
         default: {
