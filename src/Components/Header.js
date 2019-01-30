@@ -11,7 +11,7 @@ export default class Header extends Component {
                             <h3>Simple React Map Marker</h3>
                         </li>
                     </ul>
-                </a>                
+                </a>
             </nav>
         </div>
     )

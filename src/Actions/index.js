@@ -1,21 +1,22 @@
-export const ADD_LOCAL = 'ADD_LOCAL';
-export const FETCH_ALL_LOCALS = 'FETCH_ALL_LOCALS';
+export const ADD_PLACE = 'ADD_PLACE';
+export const FETCH_PLACES = 'FETCH_PLACES';
 export const SET_POSITION = 'SET_POSITION';
-export const SET_ACTIVE_LOCAL_MARKER = 'SET_ACTIVE_LOCAL_MARKER';
-export const TOGGLE_INFO_WINDOW = 'TOGGLE_INFO_WINDOW';
 
-export function addLocal(lat, lng) {
-    return { type: ADD_LOCAL, lat, lng };
+export const SET_PLACE_MODAL_COORDINATES = 'SET_PLACE_MODAL_COORDINATES';
+export const SET_PLACE_MODAL_DESCRIPTION = 'SET_PLACE_MODAL_DESCRIPTION';
+
+export function addPlace(lat, lng, description) {
+    return { type: ADD_PLACE, lat, lng, description };
 }
-export function fetchLocals() {
-    return { type: FETCH_ALL_LOCALS };
+export function fetchPlaces() {
+    return { type: FETCH_PLACES };
 }
 export function setPosition(lat, lng) {
     return { type: SET_POSITION, lat, lng };
 }
-export function setActiveLocalMarker(marker) {
-    return { type: SET_ACTIVE_LOCAL_MARKER, marker };
+export function setPlaceModalCoordinates(lat, lng) {
+    return { type: SET_PLACE_MODAL_COORDINATES, lat, lng };
 }
-export function toggleInfoWindow(show) {
-    return { type: TOGGLE_INFO_WINDOW, show };
+export function setPlaceModalDescription(description) {
+    return { type: SET_PLACE_MODAL_DESCRIPTION, description };
 }

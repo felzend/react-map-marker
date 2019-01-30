@@ -1,56 +1,66 @@
 import React, { Component } from 'react';
 import {GoogleApiWrapper, InfoWindow, Map, Marker} from 'google-maps-react';
 import { connect } from 'react-redux';
-import { addLocal, fetchLocals, setPosition, setActiveLocalMarker, toggleInfoWindow } from '../Actions';
-import AddLocalModal from './AddLocalModal';
+import { fetchPlaces, setPosition, setActiveMarker, setPlaceModalCoordinates } from '../Actions';
+import PlaceModal from './PlaceModal';
 
 class MapContainer extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      focusMarker: { lat: 0, lng: 0 }
+    this.state = { activeMarker: null, showInfoWindow: false };
+  }
+  addPlace = (props, marker, e) => {
+    let lat = e.latLng.lat();
+    let lng = e.latLng.lng();
+    this.props.setPlaceModalCoordinates(lat, lng);
+  }
+  onMapClick = (props, marker, e) => {
+    if( this.state.showInfoWindow ) {
+      this.setState({
+        activeMarker: null,
+        showInfoWindow: false,
+      });
     }
   }
-  addLocal = (props, marker, e) => {
-    let lat = e.latLng.lat();
-    let lng = e.latLng.lng();    
-    this.props.addLocal(lat, lng);
+  onMarkerClick = (props, marker, e) => {
     this.setState({
-      focusMarker: { lat, lng }
+      activeMarker: marker,
+      showInfoWindow: true,
     });
   }
-  onMapClick = (props) => {
-    if( this.props.map.showInfoWindow ) {
-      this.props.toggleInfoWindow(false);
-      this.props.setActiveLocalMarker(null);
-    }
+  onInfoWindowClose = () => {
+    this.setState({
+      showInfoWindow: false,
+    });
   }
-  onMarkerClick = (marker) => {
-    console.log(this.getLocal(marker.id));
-    this.props.toggleInfoWindow( ! this.props.map.showInfoWindow );
-    this.props.setActiveLocalMarker(marker);
-  }
-  getLocal(id) {
-    var locals = this.props.map.locals.filter(marker => marker.id === id);
-    if( locals.length ) return locals[0];
+  getPlace(id) {
+    var places = this.props.map.places.filter(marker => marker.id === id);
+    if( places.length ) return places[0];
   }
   render() {
     return (
-      <div className="map-container">        
-        <Map onRightclick={this.addLocal} google={this.props.google} initialCenter={this.props.map.initialPosition} zoom={this.props.map.zoom}>
-          {this.props.map.locals.map(marker => (
-            <Marker key={marker.id} position={marker.position} onClick={this.onMarkerClick.bind(this, marker)}/>
+      <div className="map-container">
+        <Map  onClick={this.onMapClick} onRightclick={this.addPlace} google={this.props.google} initialCenter={this.props.map.initialPosition}>
+          {this.props.map.places.map(marker => (
+            <Marker key={marker.id} id={marker.id} description={marker.description} position={marker.position} onClick={this.onMarkerClick}/>
           ))}
           <InfoWindow
-            marker={this.props.map.activeLocalMarker}
-            visible={this.props.map.showInfoWindow}
+            visible={this.state.showInfoWindow}
+            marker={this.state.activeMarker}
+            onClose={this.onInfoWindowClose}
             >
-            <div className="infowindow-content">
-              <p></p>
+            <div className="info-window">
+            { this.state.activeMarker != null &&
+              <div className="content">
+                <p>ID: <b>{this.state.activeMarker.id}</b></p>
+                <p>Coordenadas: <b>{this.state.activeMarker.position.lat()}, {this.state.activeMarker.position.lng()}</b></p>
+                <p>Descrição: <b>{this.state.activeMarker.description}</b></p>
+              </div>
+            }
             </div>
           </InfoWindow>
         </Map>
-        <AddLocalModal lat={this.state.focusMarker.lat} lng={this.state.focusMarker.lng}/>
+        <PlaceModal/>
       </div>
     )
   }
@@ -63,11 +73,9 @@ const mapStateToProps = (state) => {
 }
 const mapDispatchToProps = (dispatch, props) => {
   return {
-      addLocal: (lat, lng) => dispatch(addLocal(lat, lng)),
-      fetchLocals: () => dispatch(fetchLocals()),
-      setActiveLocalMarker: (marker) => dispatch(setActiveLocalMarker(marker)),
+      fetchPlaces: () => dispatch(fetchPlaces()),
       setPosition: (lat, lng) => dispatch(setPosition(lat, lng)),
-      toggleInfoWindow: (show) => dispatch(toggleInfoWindow(show)),
+      setPlaceModalCoordinates: (lat, lng) => dispatch(setPlaceModalCoordinates(lat, lng)),
   }
 }
 

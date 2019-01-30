@@ -1,42 +1,59 @@
-import { ADD_LOCAL, TOGGLE_INFO_WINDOW, SET_ACTIVE_LOCAL_MARKER } from "../Actions";
+import { ADD_PLACE, SET_PLACE_MODAL_DESCRIPTION, SET_PLACE_MODAL_COORDINATES, FETCH_PLACES } from "../Actions";
 import uniqid from 'uniqid';
 
 const initialState = {
     api_key: 'AIzaSyBaUKcLhuTzmpsXtt9qtBPACPFiYauS0M4',
-    activeLocalMarker: {
-        lat: -2.2,
-        lng: -35.5,
+    activeMarker: {},
+    placeModal: {
+        lat: 0.0,
+        lng: 0.0,
+        description: '',
     },
     initialPosition: {
         lat: -3.7340904,
         lng: -38.5023363,
     },
-    locals: [],
+    places: [
+        {id:"p2h2h44", lat: -3.7340904, lng: -38.5023363, description: "test 25"},
+    ],
     showInfoWindow: false,
     zoom: 14,
 };
 
 const MappingReducer = (state = initialState, action) => {
     switch(action.type) {
-        case ADD_LOCAL: {
-            let locals = state.locals;
-            locals.push({id: uniqid(), position: {lat: action.lat, lng: action.lng}});
-
+        case ADD_PLACE: {
+            let places = state.places;
+            places.push({
+                id: uniqid(),
+                position: {lat: action.lat, lng: action.lng},
+                description: action.description,
+            });
             return {
                 ...state,
-                locals
+                places,
             }
         }
-        case TOGGLE_INFO_WINDOW: {
+        case FETCH_PLACES: {
+            break;
+        }
+        case SET_PLACE_MODAL_COORDINATES: {
             return {
                 ...state,
-                showInfoWindow: action.show,
+                placeModal: {
+                    ...state.placeModal,
+                    lat: action.lat,
+                    lng: action.lng,
+                }
             }
         }
-        case SET_ACTIVE_LOCAL_MARKER: {
+        case SET_PLACE_MODAL_DESCRIPTION: {
             return {
                 ...state,
-                activeLocalMarker: action.marker,
+                placeModal: {
+                    ...state.placeModal,
+                    description: action.description,
+                }
             }
         }
         default: {
