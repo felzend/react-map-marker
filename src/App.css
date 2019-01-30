@@ -8,10 +8,14 @@
   height: 40px;
   z-index: 99999;
 }
+.navbar {
+  background-color: #66C5FF!important;
+}
 .navbar-brand {
+  display: flex;
   justify-content: center;
   flex: 1;
 }
-.navbar-brand .navbar-item > h3 {
+.navbar-brand h3 {
   color: #ffffff;
 }

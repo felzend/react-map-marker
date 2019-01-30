@@ -2,10 +2,22 @@ import React, { Component } from 'react';
 import {GoogleApiWrapper, InfoWindow, Map, Marker} from 'google-maps-react';
 import { connect } from 'react-redux';
 import { addLocal, fetchLocals, setPosition, setActiveLocalMarker, toggleInfoWindow } from '../Actions';
+import AddLocalModal from './AddLocalModal';
 
 class MapContainer extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      focusMarker: { lat: 0, lng: 0 }
+    }
+  }
   addLocal = (props, marker, e) => {
-    this.props.addLocal(e.latLng.lat(), e.latLng.lng());
+    let lat = e.latLng.lat();
+    let lng = e.latLng.lng();    
+    this.props.addLocal(lat, lng);
+    this.setState({
+      focusMarker: { lat, lng }
+    });
   }
   onMapClick = (props) => {
     if( this.props.map.showInfoWindow ) {
@@ -13,25 +25,33 @@ class MapContainer extends Component {
       this.props.setActiveLocalMarker(null);
     }
   }
-  onMarkerClick = (props, marker, e) => {
+  onMarkerClick = (marker) => {
+    console.log(this.getLocal(marker.id));
     this.props.toggleInfoWindow( ! this.props.map.showInfoWindow );
     this.props.setActiveLocalMarker(marker);
   }
+  getLocal(id) {
+    var locals = this.props.map.locals.filter(marker => marker.id === id);
+    if( locals.length ) return locals[0];
+  }
   render() {
     return (
-      <Map onRightclick={this.addLocal} google={this.props.google} initialCenter={this.props.map.initialPosition} zoom={this.props.map.zoom}>
-        {this.props.map.locals.map(marker => (
-          <Marker key={marker.id} position={marker.position} onClick={this.onMarkerClick}/>
-        ))}
-        <InfoWindow
-          marker={this.props.map.activeLocalMarker}
-          visible={this.props.map.showInfoWindow}
-          >
-          <div className="infowindow-content">
-            <p></p>
-          </div>
-        </InfoWindow>
-      </Map>
+      <div className="map-container">        
+        <Map onRightclick={this.addLocal} google={this.props.google} initialCenter={this.props.map.initialPosition} zoom={this.props.map.zoom}>
+          {this.props.map.locals.map(marker => (
+            <Marker key={marker.id} position={marker.position} onClick={this.onMarkerClick.bind(this, marker)}/>
+          ))}
+          <InfoWindow
+            marker={this.props.map.activeLocalMarker}
+            visible={this.props.map.showInfoWindow}
+            >
+            <div className="infowindow-content">
+              <p></p>
+            </div>
+          </InfoWindow>
+        </Map>
+        <AddLocalModal lat={this.state.focusMarker.lat} lng={this.state.focusMarker.lng}/>
+      </div>
     )
   }
 }

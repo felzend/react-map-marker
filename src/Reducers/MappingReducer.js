@@ -3,7 +3,10 @@ import uniqid from 'uniqid';
 
 const initialState = {
     api_key: 'AIzaSyBaUKcLhuTzmpsXtt9qtBPACPFiYauS0M4',
-    activeLocalMarker: null,
+    activeLocalMarker: {
+        lat: -2.2,
+        lng: -35.5,
+    },
     initialPosition: {
         lat: -3.7340904,
         lng: -38.5023363,

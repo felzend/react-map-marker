@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import 'bulma/css/bulma.css';
+import 'popper.js';
+import 'bootstrap/dist/js/bootstrap.js';
+import 'bootstrap/dist/css/bootstrap.css';
 import './App.css';
 import { connect } from 'react-redux';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
