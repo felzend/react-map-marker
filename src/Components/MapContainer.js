@@ -9,10 +9,16 @@ class MapContainer extends Component {
     super(props);
     this.state = { activeMarker: null, showInfoWindow: false };
   }
+  componentDidMount() {
+    this.fetchPlaces();
+  }
   addPlace = (props, marker, e) => {
     let lat = e.latLng.lat();
     let lng = e.latLng.lng();
     this.props.setPlaceModalCoordinates(lat, lng);
+  }
+  fetchPlaces = () => {
+    fetch("http://localhost:49856/api/Places/").then(response => console.log(response));
   }
   onMapClick = (props, marker, e) => {
     if( this.state.showInfoWindow ) {
