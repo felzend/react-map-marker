@@ -1,24 +1,34 @@
 import React, { Component } from 'react';
 import {GoogleApiWrapper, InfoWindow, Map, Marker} from 'google-maps-react';
 import { connect } from 'react-redux';
-import { fetchPlaces, setPosition, setActiveMarker, setPlaceModalCoordinates } from '../Actions';
+import { setPlaces, setPosition, setPlaceModalCoordinates, deletePlace } from '../Actions';
 import PlaceModal from './PlaceModal';
 
 class MapContainer extends Component {
   constructor(props) {
     super(props);
     this.state = { activeMarker: null, showInfoWindow: false };
+
+    this.onDeleteClick = this.onDeleteClick.bind(this);
   }
   componentDidMount() {
     this.fetchPlaces();
   }
-  addPlace = (props, marker, e) => {
+  setPlaceModalCoordinates = (props, marker, e) => {
     let lat = e.latLng.lat();
     let lng = e.latLng.lng();
     this.props.setPlaceModalCoordinates(lat, lng);
   }
   fetchPlaces = () => {
-    fetch("http://localhost:49856/api/Places/").then(response => console.log(response));
+    fetch("http://localhost:49856/api/Places/")
+    .then(response => response.json())
+    .then(data => {
+      this.props.setPlaces(data);
+      console.log(this.props.map);
+    });
+  }
+  onDeleteClick = (place) => {
+    console.log(place);
   }
   onMapClick = (props, marker, e) => {
     if( this.state.showInfoWindow ) {
@@ -46,10 +56,11 @@ class MapContainer extends Component {
   render() {
     return (
       <div className="map-container">
-        <Map  onClick={this.onMapClick} onRightclick={this.addPlace} google={this.props.google} initialCenter={this.props.map.initialPosition}>
+        <Map onClick={this.onMapClick} onRightclick={this.setPlaceModalCoordinates} google={this.props.google} initialCenter={this.props.map.initialPosition}>
           {this.props.map.places.map(marker => (
-            <Marker key={marker.id} id={marker.id} description={marker.description} position={marker.position} onClick={this.onMarkerClick}/>
+            <Marker key={marker.id} id={marker.id} description={marker.description} position={{lat: marker.lat, lng: marker.lng}} onClick={this.onMarkerClick}/>
           ))}
+
           <InfoWindow
             visible={this.state.showInfoWindow}
             marker={this.state.activeMarker}
@@ -79,7 +90,8 @@ const mapStateToProps = (state) => {
 }
 const mapDispatchToProps = (dispatch, props) => {
   return {
-      fetchPlaces: () => dispatch(fetchPlaces()),
+      deletePlace: (id) => dispatch(deletePlace(id)),
+      setPlaces: (places) => dispatch(setPlaces(places)),
       setPosition: (lat, lng) => dispatch(setPosition(lat, lng)),
       setPlaceModalCoordinates: (lat, lng) => dispatch(setPlaceModalCoordinates(lat, lng)),
   }

@@ -11,21 +11,28 @@ class PlaceModal extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if( this.props.placeModal.lat !== nextProps.placeModal.lat || this.props.placeModal.lng !== nextProps.placeModal.lng ) {
-      $("#" + this.state.placeModal).modal();
+      $("#" + this.state.placeModal).modal('show');
     }
   }
   submitForm(e) {
     e.preventDefault();
-    let data = {
-      lat: this.props.placeModal.lat,
-      lng: this.props.placeModal.lng,
-      description: this.props.placeModal.description,
+    var data = {
+      Lat: this.props.placeModal.lat,
+      Lng: this.props.placeModal.lng,
+      Description: this.props.placeModal.description,
     }
 
-    this.props.addPlace(data.lat, data.lng, data.description);
-    $("#" + this.state.placeModal).modal('hide');
-
-    alert("Local adicionado com sucesso!");
+    fetch("http://localhost:49856/api/Places/Add", {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(json => {
+      this.props.addPlace(data.Lat, data.Lng, data.Description);
+      $("#" + this.state.placeModal).modal('hide');
+      alert("Local adicionado com sucesso!");
+    });
   }
   handleDescription(e) {
     this.props.setPlaceModalDescription(e.target.value);
@@ -57,12 +64,13 @@ class PlaceModal extends Component {
                     <input className="form-control" onChange={this.handleDescription.bind(this)} required={true}/>
                   </div>
                   <div className="form-group">
-                    <button type="submit" className="btn btn-success">Salvar</button>
+                    <button type="submit" className="btn btn-success btn-block">Salvar</button>
+                    <button type="button" className="btn btn-danger btn-block">Apagar</button>
                   </div>
                 </form>
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-danger" data-dismiss="modal">Fechar</button>
+                <button type="button" className="btn btn-warning" data-dismiss="modal">Fechar</button>
               </div>
             </div>
           </div>

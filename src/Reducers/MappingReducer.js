@@ -1,4 +1,4 @@
-import { ADD_PLACE, SET_PLACE_MODAL_DESCRIPTION, SET_PLACE_MODAL_COORDINATES, FETCH_PLACES } from "../Actions";
+import { ADD_PLACE, SET_PLACE_MODAL_DESCRIPTION, SET_PLACE_MODAL_COORDINATES, SET_PLACES, DELETE_PLACE } from "../Actions";
 import uniqid from 'uniqid';
 
 const initialState = {
@@ -13,9 +13,7 @@ const initialState = {
         lat: -3.7340904,
         lng: -38.5023363,
     },
-    places: [
-        {id:"p2h2h44", lat: -3.7340904, lng: -38.5023363, description: "test 25"},
-    ],
+    places: [],
     showInfoWindow: false,
     zoom: 14,
 };
@@ -26,7 +24,8 @@ const MappingReducer = (state = initialState, action) => {
             let places = state.places;
             places.push({
                 id: uniqid(),
-                position: {lat: action.lat, lng: action.lng},
+                lat: action.lat,
+                lng: action.lng,
                 description: action.description,
             });
             return {
@@ -34,8 +33,17 @@ const MappingReducer = (state = initialState, action) => {
                 places,
             }
         }
-        case FETCH_PLACES: {
-            break;
+        case DELETE_PLACE: {
+            return {
+                ...state,
+            }
+        }
+        case SET_PLACES: {
+            console.log(action);
+            return {
+                ...state,
+                places: action.places,
+            }
         }
         case SET_PLACE_MODAL_COORDINATES: {
             return {
