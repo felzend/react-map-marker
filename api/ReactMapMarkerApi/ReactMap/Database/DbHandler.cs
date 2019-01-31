@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-using NHibernate;
+﻿using NHibernate;
 using FluentNHibernate.Cfg;
-using FluentNHibernate.Cfg.Db;
+using Microsoft.Extensions.Configuration;
+using System.IO;
+using NHibernate.Tool.hbm2ddl;
+using ReactMap.Model;
 
 namespace ReactMap.Database
 {
@@ -13,10 +11,16 @@ namespace ReactMap.Database
     {
         public static ISessionFactory CreateSessionFactory()
         {
-            return Fluently
-                .Configure().Database(MsSqlConfiguration.MsSql2005.ConnectionString(c =>
-                //.Mappings(null)
-                .BuildSessionFactory();
+            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json");
+            var settings = builder.Build();
+            var configuration = Fluently
+                .Configure()
+                .Database(FluentNHibernate.Cfg.Db.MsSqlConfiguration.MsSql2012.ConnectionString(settings["ConnectionString"]))
+                .Mappings(x => x.FluentMappings.AddFromAssemblyOf<Place>())
+                .BuildConfiguration();
+
+            new SchemaUpdate(configuration).Execute(false, true);
+            return configuration.BuildSessionFactory();
         }
     }
 }

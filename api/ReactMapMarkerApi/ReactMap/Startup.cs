@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using ReactMap.Database;
 
 namespace ReactMap
 {
@@ -16,6 +17,7 @@ namespace ReactMap
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            DbHandler.CreateSessionFactory();
         }
 
         public IConfiguration Configuration { get; }
@@ -35,6 +37,7 @@ namespace ReactMap
             }
 
             app.UseMvc();
+            app.UseCors(options => options.AllowAnyOrigin());
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReactMap.Database;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,9 +8,13 @@ namespace ReactMap.Repository
 {
     public abstract class Repository<T>
     {
-        public Repository()
+        public IList<T> All()
         {
-            //var sessionFactory = CreateSessionFactory();
+            var sessionFactory = DbHandler.CreateSessionFactory();
+            using (var session = sessionFactory.OpenSession())
+            {
+                return session.CreateCriteria(typeof(T)).List<T>();
+            }
         }
     }
 }
