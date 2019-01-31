@@ -11,7 +11,7 @@ namespace ReactMap.Database
     {
         public static ISessionFactory CreateSessionFactory()
         {
-            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json");
+            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("DBConfig.json");
             var settings = builder.Build();
             var configuration = Fluently
                 .Configure()

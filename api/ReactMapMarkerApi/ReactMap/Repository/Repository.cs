@@ -16,5 +16,18 @@ namespace ReactMap.Repository
                 return session.CreateCriteria(typeof(T)).List<T>();
             }
         }
+
+        public void Add(T entity)
+        {
+            var sessionFactory = DbHandler.CreateSessionFactory();
+            using (var session = sessionFactory.OpenSession())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+                    session.SaveOrUpdate(entity);
+                    transaction.Commit();
+                }
+            }
+        }
     }
 }

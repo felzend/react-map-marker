@@ -11,7 +11,12 @@ namespace ReactMap.Model
         public virtual float Lat { get; set; }
         public virtual float Lng { get; set; }
         public virtual string Description { get; set; }
-        public virtual DateTime CreatedAt { get; set; }
-        public virtual DateTime UpdatedAt { get; set; }
+        public virtual DateTime? CreatedAt { get; set; }
+        public virtual DateTime? UpdatedAt { get; set; }
+
+        public Place()
+        {
+
+        }
     }
 }

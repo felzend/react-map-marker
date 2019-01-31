@@ -9,7 +9,7 @@ namespace ReactMap.Controllers
 {
     [Produces("application/json")]
     [Route("api/Places")]
-    [EnableCors("http://localhost/")] // Precisa ajeitar CORS
+    [EnableCors("AllowLocalhost")]
     public class PlacesController : Controller
     {
         [Inject]
@@ -22,11 +22,17 @@ namespace ReactMap.Controllers
             this.Repository = kernel.Get<PlacesRepository>();
         }
 
-        [Route("")]
         [HttpGet]
         public IList<Place> Index()
         {
             return this.Repository.All();
+        }
+
+        [HttpPost]
+        [Route("Add")]
+        public void Add([FromBody]Place obj)
+        {
+            this.Repository.Add(obj);
         }
     }
 }
