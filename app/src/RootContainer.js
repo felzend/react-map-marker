@@ -6,7 +6,7 @@ import './App.css';
 import { connect } from 'react-redux';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Header from './Components/Header';
-import MapContainer from './Components/MapContainer';
+import Map from './Components/Map';
 
 class RootContainer extends Component {
   render() {
@@ -15,7 +15,7 @@ class RootContainer extends Component {
         <div id="app" className="app">
           <Header/>
           <div className="routes">
-            <Route path="/" component={MapContainer}></Route>
+            <Route path="/" exact component={Map}></Route>
           </div>
           <div className="content">
 
