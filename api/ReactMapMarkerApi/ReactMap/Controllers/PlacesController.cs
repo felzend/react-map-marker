@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Ninject;
 using ReactMap.Model;
+using ReactMap.Modules;
 using ReactMap.Repository;
 
 namespace ReactMap.Controllers
 {
     [Produces("application/json")]
-    [Route("api/Places")]
-    [EnableCors("AllowLocalhost")]
+    [Route("api/places")]
     public class PlacesController : Controller
     {
         [Inject]
@@ -17,8 +17,7 @@ namespace ReactMap.Controllers
 
         public PlacesController()
         {
-            IKernel kernel = new StandardKernel();
-            kernel.Bind<PlacesRepository>().ToSelf();
+            IKernel kernel = new StandardKernel(new CoreModule());
             this.Repository = kernel.Get<PlacesRepository>();
         }
 
@@ -28,8 +27,7 @@ namespace ReactMap.Controllers
             return this.Repository.All();
         }
 
-        [HttpPost]
-        [Route("Add")]
+        [HttpPost("add")]
         public void Add([FromBody]Place obj)
         {
             this.Repository.Add(obj);
