@@ -24,7 +24,7 @@ namespace ReactMap.Repository
             }
         }
 
-        public void Add(T entity)
+        public T Add(T entity)
         {
             try
             {
@@ -35,6 +35,7 @@ namespace ReactMap.Repository
                     {
                         session.SaveOrUpdate(entity);
                         transaction.Commit();
+                        return entity;
                     }
                 }
             }
@@ -44,7 +45,7 @@ namespace ReactMap.Repository
             }
         }
 
-        public void Delete(long id)
+        public void Delete(int id)
         {
             try
             {

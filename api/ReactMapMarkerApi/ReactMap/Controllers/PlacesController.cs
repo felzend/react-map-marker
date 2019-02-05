@@ -11,7 +11,7 @@ namespace ReactMap.Controllers
 {
     [Produces("application/json")]
     [Route("api/places")]
-    public class PlacesController : ControllerBase
+    public class PlacesController : Controller
     {
         public PlacesRepository Repository { get; set; }
 
@@ -35,13 +35,11 @@ namespace ReactMap.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index([FromBody]Place place)
+        public IActionResult Post([FromBody]Place place)
         {
             try
-            {                
-                this.Repository.Add(place);
-                return Ok("Local inserido com sucesso!");
-
+            {
+                return Json(this.Repository.Add(place));
             }
             catch(Exception e)
             {
@@ -50,7 +48,7 @@ namespace ReactMap.Controllers
         }
 
         [HttpDelete]
-        public IActionResult Delete(long id)
+        public IActionResult Delete(int id)
         {
             try
             {
