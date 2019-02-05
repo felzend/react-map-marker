@@ -3,44 +3,42 @@ import React, { Component } from 'react';
 import { addPlace } from '../Actions';
 import { connect } from 'react-redux';
 import { setPlaceModalDescription} from '../Actions';
+import { API_URL } from '../api';
+import { handleApiErrors } from '../util';
+
+const placeModalId = "place-modal";
 
 class PlaceModal extends Component {
   constructor(props) {
     super(props);
-    this.state = { placeModal: "place-modal" };
+    this.state = {Lat: 0, Lng: 0, Description: ''};
   }
-  componentWillReceiveProps(nextProps) {
-    if( this.props.placeModal.lat !== nextProps.placeModal.lat || this.props.placeModal.lng !== nextProps.placeModal.lng ) {
-      $("#" + this.state.placeModal).modal('show');
-    }
+  componentWillReceiveProps(nextProps) {    
+    $("#".concat(placeModalId)).modal('show');
+    this.setState({Lat: nextProps.lat, Lng: nextProps.lng});
   }
-  submitForm(e) {
+  onDescriptionChange(e) {
+    this.setState({Description: e.target.value});
+  }
+  formSubmit(e) {
     e.preventDefault();
-    var data = {
-      Lat: this.props.placeModal.lat,
-      Lng: this.props.placeModal.lng,
-      Description: this.props.placeModal.description,
-    }
-
-    fetch("http://localhost:49856/api/Places/Add", {
+    fetch(API_URL.concat("places"), {
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+      body: JSON.stringify(this.state),
     })
-    .then(response => response.json())
-    .then(json => {
-      this.props.addPlace(data.Lat, data.Lng, data.Description);
-      $("#" + this.state.placeModal).modal('hide');
+    .then(response => handleApiErrors(response, "Local adicionado com sucesso!", "Falha ao adicionar local."))
+    .then(data => {
+      $("#".concat(placeModalId)).modal('hide');
+      this.props.addPlace(this.state.Lat, this.state.Lng, this.state.Description);      
       alert("Local adicionado com sucesso!");
     });
   }
-  handleDescription(e) {
-    this.props.setPlaceModalDescription(e.target.value);
-  }
+  
   render() {
     return (
       <div className="modal-component">
-        <div className="modal fade" tabIndex="-1" role="dialog" id={this.state.placeModal}>
+        <div className="modal fade" tabIndex="-1" role="dialog" id={placeModalId}>
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header">
@@ -50,27 +48,26 @@ class PlaceModal extends Component {
                 </button>
               </div>
               <div className="modal-body">
-                <form onSubmit={this.submitForm.bind(this)}>
+                <form onSubmit={this.formSubmit.bind(this)}>
                   <div className="form-group">
                     <label htmlFor="lat">Latitude</label>
-                    <input className="form-control" value={this.props.placeModal.lat} disabled={true}/>
+                    <input className="form-control" name="Lat" value={this.props.lat} disabled={true}/>
                   </div>
                   <div className="form-group">
                     <label htmlFor="lng">Longitude</label>
-                    <input className="form-control" value={this.props.placeModal.lng} disabled={true}/>
+                    <input className="form-control" name="Lng" value={this.props.lng} disabled={true}/>
                   </div>
                   <div className="form-group">
                     <label htmlFor="description">Descrição</label>
-                    <input className="form-control" onChange={this.handleDescription.bind(this)} required={true}/>
+                    <input className="form-control" name="Description" onChange={this.onDescriptionChange.bind(this)} required={true}/>
                   </div>
                   <div className="form-group">
                     <button type="submit" className="btn btn-success btn-block">Salvar</button>
-                    <button type="button" className="btn btn-danger btn-block">Apagar</button>
                   </div>
                 </form>
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-warning" data-dismiss="modal">Fechar</button>
+                <button type="button" className="btn brn-primary" data-dismiss="modal">Fechar</button>
               </div>
             </div>
           </div>
