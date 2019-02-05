@@ -7,8 +7,8 @@ export const TOGGLE_PLACE_INFO_WINDOW = 'TOGGLE_PLACE_INFO_WINDOW';
 export const SET_PLACE_MODAL_COORDINATES = 'SET_PLACE_MODAL_COORDINATES';
 export const SET_PLACE_MODAL_DESCRIPTION = 'SET_PLACE_MODAL_DESCRIPTION';
 
-export function addPlace(lat, lng, description) {
-    return { type: ADD_PLACE, lat, lng, description };
+export function addPlace(id, lat, lng, description) {
+    return { type: ADD_PLACE, id, lat, lng, description };
 }
 export function deletePlace(id) {
     return { type: DELETE_PLACE, id };

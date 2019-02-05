@@ -13,7 +13,7 @@ class PlaceModal extends Component {
     super(props);
     this.state = {Lat: 0, Lng: 0, Description: ''};
   }
-  componentWillReceiveProps(nextProps) {    
+  componentWillReceiveProps(nextProps) {
     $("#".concat(placeModalId)).modal('show');
     this.setState({Lat: nextProps.lat, Lng: nextProps.lng});
   }
@@ -22,19 +22,19 @@ class PlaceModal extends Component {
   }
   formSubmit(e) {
     e.preventDefault();
-    fetch(API_URL.concat("places"), {
-      method: "POST",
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(this.state),
-    })
-    .then(response => handleApiErrors(response, "Local adicionado com sucesso!", "Falha ao adicionar local."))
+    fetch(API_URL.concat("places"), { method: "POST", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(this.state) })
+    .then(response => response.json())
     .then(data => {
+      if(data !== undefined) {
+        this.state = {Lat: 0, Lng: 0, Description: ''};
+        this.props.addPlace(data.id, data.lat, data.lng, data.description);
+        alert("Local adicionado com sucesso!");
+      }
       $("#".concat(placeModalId)).modal('hide');
-      this.props.addPlace(this.state.Lat, this.state.Lng, this.state.Description);      
-      alert("Local adicionado com sucesso!");
-    });
+    })
+    .catch(error => alert(error));
   }
-  
+
   render() {
     return (
       <div className="modal-component">
@@ -67,7 +67,7 @@ class PlaceModal extends Component {
                 </form>
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn brn-primary" data-dismiss="modal">Fechar</button>
+                <button type="button" className="btn btn-primary" data-dismiss="modal">Fechar</button>
               </div>
             </div>
           </div>
@@ -84,7 +84,7 @@ const mapStateToProps = (state) => {
 }
 const mapDispatchToProps = (dispatch) => {
   return {
-    addPlace: (lat, lng, description) => dispatch(addPlace(lat, lng, description)),
+    addPlace: (id, lat, lng, description) => dispatch(addPlace(id, lat, lng, description)),
     setPlaceModalDescription: (description) => dispatch(setPlaceModalDescription(description)),
   }
 }
