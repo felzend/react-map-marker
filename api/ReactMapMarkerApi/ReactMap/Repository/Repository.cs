@@ -10,23 +10,58 @@ namespace ReactMap.Repository
     {
         public IList<T> All()
         {
-            var sessionFactory = DbHandler.CreateSessionFactory();
-            using (var session = sessionFactory.OpenSession())
+            try
             {
-                return session.CreateCriteria(typeof(T)).List<T>();
+                var sessionFactory = DbHandler.CreateSessionFactory();
+                using (var session = sessionFactory.OpenSession())
+                {
+                    return session.CreateCriteria(typeof(T)).List<T>();
+                }
+            }
+            catch(Exception e)
+            {
+                throw new Exception(e.Message);
             }
         }
 
         public void Add(T entity)
         {
-            var sessionFactory = DbHandler.CreateSessionFactory();
-            using (var session = sessionFactory.OpenSession())
+            try
             {
-                using (var transaction = session.BeginTransaction())
+                var sessionFactory = DbHandler.CreateSessionFactory();
+                using (var session = sessionFactory.OpenSession())
                 {
-                    session.SaveOrUpdate(entity);
-                    transaction.Commit();
+                    using (var transaction = session.BeginTransaction())
+                    {
+                        session.SaveOrUpdate(entity);
+                        transaction.Commit();
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public void Delete(long id)
+        {
+            try
+            {
+                var sessionFactory = DbHandler.CreateSessionFactory();
+                using (var session = sessionFactory.OpenSession())
+                {
+                    using (var transaction = session.BeginTransaction())
+                    {
+                        T entity = session.Get<T>(id);
+                        session.Delete(entity);
+                        transaction.Commit();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Ninject;
@@ -10,9 +11,8 @@ namespace ReactMap.Controllers
 {
     [Produces("application/json")]
     [Route("api/places")]
-    public class PlacesController : Controller
+    public class PlacesController : ControllerBase
     {
-        [Inject]
         public PlacesRepository Repository { get; set; }
 
         public PlacesController()
@@ -22,15 +22,45 @@ namespace ReactMap.Controllers
         }
 
         [HttpGet]
-        public IList<Place> Index()
+        public IActionResult Index()
         {
-            return this.Repository.All();
+            try
+            {
+                return Ok(this.Repository.All());
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
-        [HttpPost("add")]
-        public void Add([FromBody]Place obj)
+        [HttpPost]
+        public IActionResult Index([FromBody]Place place)
         {
-            this.Repository.Add(obj);
+            try
+            {                
+                this.Repository.Add(place);
+                return Ok("Local inserido com sucesso!");
+
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpDelete]
+        public IActionResult Delete(long id)
+        {
+            try
+            {
+                this.Repository.Delete(id);
+                return Ok("Local deletado coms sucesso.");
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }
