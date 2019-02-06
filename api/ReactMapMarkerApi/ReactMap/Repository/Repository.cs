@@ -1,4 +1,5 @@
-﻿using ReactMap.Database;
+﻿using Newtonsoft.Json.Linq;
+using ReactMap.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +41,25 @@ namespace ReactMap.Repository
                 }
             }
             catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public void Edit(T entity)
+        {
+            try
+            {
+                var sessionFactory = DbHandler.CreateSessionFactory();
+                using (var session = sessionFactory.OpenSession())
+                {
+                    using (var transaction = session.BeginTransaction())
+                    {
+                        session.SaveOrUpdate(entity);
+                    }
+                }
+            }
+            catch(Exception e)
             {
                 throw new Exception(e.Message);
             }
