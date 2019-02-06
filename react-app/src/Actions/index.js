@@ -1,4 +1,5 @@
 export const ADD_PLACE = 'ADD_PLACE';
+export const EDIT_PLACE = 'EDIT_PLACE';
 export const FETCH_PLACES = 'FETCH_PLACES';
 export const DELETE_PLACE = 'DELETE_PLACE';
 
@@ -9,6 +10,9 @@ export const SET_PLACE_MODAL_DESCRIPTION = 'SET_PLACE_MODAL_DESCRIPTION';
 
 export function addPlace(id, lat, lng, description) {
     return { type: ADD_PLACE, id, lat, lng, description };
+}
+export function editPlace(id, data) {
+    return { type: EDIT_PLACE, id, data };
 }
 export function deletePlace(id) {
     return { type: DELETE_PLACE, id };

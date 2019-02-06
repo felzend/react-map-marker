@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { GoogleMap as GMap, Marker, withScriptjs, withGoogleMap, InfoWindow } from "react-google-maps";
-import { deletePlace, fetchPlaces, togglePlaceInfoWindow } from '../Actions';
+import { editPlace, deletePlace, fetchPlaces, togglePlaceInfoWindow } from '../Actions';
 import { API_URL } from '../api';
 import PlaceModal from './PlaceModal';
 import { handleApiErrors } from '../util';
@@ -17,6 +17,12 @@ class Map extends Component {
     onAddPlace = (e) => {
         let position = e.latLng;
         this.setState({addPlace: {lat: position.lat(), lng: position.lng()}});
+    }
+    onEditPlace = (marker) => {
+        let description = window.prompt(`Editar a descrição do local id ${marker.id}`, marker.description);
+        if(description) {
+            this.props.editPlace(marker.id, {description});
+        }
     }
     onDeletePlace = (marker) => {
         let confirm = window.confirm(`Deseja mesmo apagar este local? (ID ${marker.id})`);
@@ -43,6 +49,7 @@ class Map extends Component {
                 onAddPlace={this.onAddPlace}
                 onMarkerClick={this.onMarkerClick}
                 onInfoWindowClose={this.onInfoWindowClose}
+                onEditPlace={this.onEditPlace}
                 onDeletePlace={this.onDeletePlace}
 
                 googleMapURL={this.props.map.googleMapURL}
@@ -67,8 +74,11 @@ const GoogleMap = withScriptjs(withGoogleMap((props) =>
             {marker.showInfoWindow &&
             <InfoWindow onCloseClick={props.onInfoWindowClose.bind(this, marker)}>
                 <div className="infowindow">
-                    <p>Show {marker.id}</p>
-                    <a href="#" onClick={props.onDeletePlace.bind(this, marker)}>Apagar</a>
+                    <p>ID: <b>{marker.id}</b></p>
+                    <p>Posição: <b>{marker.lat}, {marker.lng}</b></p>
+                    <p>Descrição: <b>{marker.description}</b></p>
+                    <p><a href="#" onClick={props.onEditPlace.bind(this, marker)}>Editar Local</a></p>
+                    <p><a href="#" onClick={props.onDeletePlace.bind(this, marker)}>Apagar Local</a></p>
                 </div>
             </InfoWindow>}
         </Marker>
@@ -88,6 +98,12 @@ const mapDispatchToProps = (dispatch, props) => {
             .then(response => response.json())
             .then(places => dispatch(fetchPlaces(places)))
             .catch(error => alert(error));
+        },
+        editPlace: (id, data) => {
+            fetch(API_URL.concat('places'), {method: "PUT", 'content-type': 'application/json'})
+            .then(response => response.json)
+            .then(response => dispatch(editPlace(id, data)))
+            .catch(error => alert(error))
         },
         deletePlace: (id) => {
             fetch(API_URL.concat(`places?id=${id}`), {method: 'DELETE'})
