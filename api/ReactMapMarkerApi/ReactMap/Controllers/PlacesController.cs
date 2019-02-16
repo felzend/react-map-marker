@@ -48,7 +48,7 @@ namespace ReactMap.Controllers
         }
 
         [HttpPut]
-        public IActionResult Edit([FromBody]Place place) // Pendente.
+        public IActionResult Edit([FromBody]Place place)
         {
             try
             {

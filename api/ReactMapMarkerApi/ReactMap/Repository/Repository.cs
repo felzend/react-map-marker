@@ -56,6 +56,7 @@ namespace ReactMap.Repository
                     using (var transaction = session.BeginTransaction())
                     {
                         session.SaveOrUpdate(entity);
+                        transaction.Commit();
                     }
                 }
             }
