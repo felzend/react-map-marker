@@ -20,8 +20,10 @@ class Map extends Component {
     }
     onEditPlace = (marker) => {
         let description = window.prompt(`Editar a descrição do local id ${marker.id}`, marker.description);
+        let newMarker = marker;
         if(description) {
-            this.props.editPlace(marker.id, {description});
+            newMarker.description = description;
+            this.props.editPlace(newMarker.id, newMarker);
         }
     }
     onDeletePlace = (marker) => {
@@ -99,10 +101,10 @@ const mapDispatchToProps = (dispatch, props) => {
             .then(places => dispatch(fetchPlaces(places)))
             .catch(error => alert(error));
         },
-        editPlace: (id, data) => {
-            fetch(API_URL.concat('places'), {method: "PUT", 'content-type': 'application/json'})
-            .then(response => response.json)
-            .then(response => dispatch(editPlace(id, data)))
+        editPlace: (id, place) => {
+            fetch(API_URL.concat('places'), {body: JSON.stringify(place), method: "PUT", headers: {'content-type': 'application/json'} })
+            .then(response => handleApiErrors(response, "Descrição atualizada com sucesso!", "Falha ao atualizar descrição."))
+            .then(response => dispatch(editPlace(id, place)))
             .catch(error => alert(error))
         },
         deletePlace: (id) => {
@@ -111,10 +113,6 @@ const mapDispatchToProps = (dispatch, props) => {
             .then(data => dispatch(deletePlace(id)));
         },
         togglePlaceInfoWindow: (id, status) => dispatch(togglePlaceInfoWindow(id, status)),
-        // deletePlace: (id) => dispatch(deletePlace(id)),
-        // setPlaces: (places) => dispatch(setPlaces(places)),
-        // setPosition: (lat, lng) => dispatch(setPosition(lat, lng)),
-        // setPlaceModalCoordinates: (lat, lng) => dispatch(setPlaceModalCoordinates(lat, lng)),
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Map);

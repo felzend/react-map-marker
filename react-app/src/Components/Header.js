@@ -8,7 +8,7 @@ export default class Header extends Component {
                 <a className="navbar-brand" href="javascript:void(0)">
                     <ul className="navbar-nav">
                         <li className="nav-item active">
-                            <h3>Simple React Map Marker</h3>
+                            <h5>Simple React Map Marker</h5>
                         </li>
                     </ul>
                 </a>
