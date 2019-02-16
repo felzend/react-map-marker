@@ -4,7 +4,6 @@ import { addPlace } from '../Actions';
 import { connect } from 'react-redux';
 import { setPlaceModalDescription} from '../Actions';
 import { API_URL } from '../api';
-import { handleApiErrors } from '../util';
 
 const placeModalId = "place-modal";
 
@@ -25,11 +24,11 @@ class PlaceModal extends Component {
     fetch(API_URL.concat("places"), { method: "POST", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(this.state) })
     .then(response => response.json())
     .then(data => {
-      if(data !== undefined) {
-        this.state = {Lat: 0, Lng: 0, Description: ''};
-        this.props.addPlace(data.id, data.lat, data.lng, data.description);
+      if(data !== undefined) {        
+        this.setState({Lat: 0, Lng: 0, Description: ''});
+        this.props.addPlace(data.id, data.lat, data.lng, data.description);        
         alert("Local adicionado com sucesso!");
-      }
+      }      
       $("#".concat(placeModalId)).modal('hide');
     })
     .catch(error => alert(error));
@@ -59,7 +58,7 @@ class PlaceModal extends Component {
                   </div>
                   <div className="form-group">
                     <label htmlFor="description">Descrição</label>
-                    <input className="form-control" name="Description" onChange={this.onDescriptionChange.bind(this)} required={true}/>
+                    <input className="form-control" name="Description" onChange={this.onDescriptionChange.bind(this)} value={this.state.Description} required={true}/>
                   </div>
                   <div className="form-group">
                     <button type="submit" className="btn btn-success btn-block">Salvar</button>
