@@ -4,6 +4,13 @@
 
 > * Ensure to run **npm install** inside **/react-app** folder.
 > * API's URL and Google Maps API key setup are required on the file present at **/react-app/src/api.js** for ensure the application works correctly.
+> * Create a file called **database.json** inside **the /api/ReactMapMarkerApi/ReactMap** folder, with your connection string. Example below:
+
+```[json]
+{
+  "ConnectionString": "Data Source=DESKTOP-MACHINE-ID\\SQLEXPRESS;Database=reactmap;User Id=YourUserName;Password=YourPassword"
+}
+```
 
 ### Folders
 
