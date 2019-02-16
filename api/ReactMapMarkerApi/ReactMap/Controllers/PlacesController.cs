@@ -47,6 +47,20 @@ namespace ReactMap.Controllers
             }
         }
 
+        [HttpPut]
+        public IActionResult Edit([FromBody]Place place) // Pendente.
+        {
+            try
+            {
+                this.Repository.Edit(place);
+                return Ok("Local atualizado com sucesso!");
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         [HttpDelete]
         public IActionResult Delete(int id)
         {
